@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saudi Job Match AI</title>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  margin:0;
+  background:#f4f6f8;
+  color:#222;
+}
+header{
+  background:#0b5d3b;
+  color:white;
+  padding:25px 18px;
+  text-align:center;
+}
+.container{
+  max-width:700px;
+  margin:20px auto;
+  padding:0 15px;
+}
+.card{
+  background:white;
+  padding:20px;
+  margin-bottom:18px;
+  border-radius:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+h1{margin:0 0 8px}
+h2{margin-top:0}
+input,select,button{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+button{
+  background:#0b5d3b;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{background:#08482e}
+.job{
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:15px;
+  margin-top:12px;
+}
+.match{
+  color:#0b5d3b;
+  font-weight:bold;
+}
+small{color:#666}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🇸🇦 Saudi Job Match AI</h1>
+  <p>Find Saudi jobs matching your experience</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Your Job Profile</h2>
+
+    <input id="name" placeholder="Your name">
+
+    <input id="experience"
+      placeholder="Experience e.g. Restaurant Manager, Retail Supervisor">
+
+    <input id="location"
+      placeholder="Preferred city e.g. Jeddah">
+
+    <input id="salary"
+      type="number"
+      placeholder="Minimum salary (SAR)">
+
+    <select id="category">
+      <option value="">Select job category</option>
+      <option>Restaurant Manager</option>
+      <option>Store Manager</option>
+      <option>Retail Supervisor</option>
+      <option>Soft Services Supervisor</option>
+      <option>Store Keeper</option>
+      <option>F&B Supervisor</option>
+      <option>Branch Manager</option>
+      <option>Other</option>
+    </select>
+
+    <button onclick="findJobs()">Find Matching Jobs</button>
+  </div>
+
+  <div class="card">
+    <h2>Matching Jobs</h2>
+    <div id="results">
+      Enter your profile above and tap
+      <b>Find Matching Jobs</b>.
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+function findJobs(){
+
+  const experience =
+    document.getElementById("experience").value.toLowerCase();
+
+  const location =
+    document.getElementById("location").value.toLowerCase();
+
+  const salary =
+    Number(document.getElementById("salary").value || 0);
+
+  const category =
+    document.getElementById("category").value.toLowerCase();
+
+  const jobs = [
+
+    {
+      title:"Restaurant Manager",
+      city:"Jeddah",
+      salary:6500,
+      category:"restaurant manager",
+      link:"https://www.linkedin.com/jobs/"
+    },
+
+    {
+      title:"Store Manager",
+      city:"Jeddah",
+      salary:6000,
+      category:"store manager",
+      link:"https://www.linkedin.com/jobs/"
+    },
+
+    {
+      title:"Retail Supervisor",
+      city:"Jeddah",
+      salary:5000,
+      category:"retail supervisor",
+      link:"https://www.linkedin.com/jobs/"
+    },
+
+    {
+      title:"Soft Services Supervisor",
+      city:"Jeddah",
+      salary:5000,
+      category:"soft services supervisor",
+      link:"https://www.linkedin.com/jobs/"
+    },
+
+    {
+      title:"Store Keeper",
+      city:"Jeddah",
+      salary:4500,
+      category:"store keeper",
+      link:"https://www.linkedin.com/jobs/"
+    }
+
+  ];
+
+  let matches = jobs.filter(job => {
+
+    const cityMatch =
+      !location || job.city.toLowerCase().includes(location);
+
+    const salaryMatch =
+      !salary || job.salary >= salary;
+
+    const categoryMatch =
+      !category ||
+      job.category.includes(category) ||
+      category.includes(job.category);
+
+    const experienceMatch =
+      !experience ||
+      job.category.includes("restaurant") && experience.includes("restaurant") ||
+      job.category.includes("store") && experience.includes("store") ||
+      job.category.includes("retail") && experience.includes("retail") ||
+      job.category.includes("soft") && experience.includes("soft");
+
+    return cityMatch && salaryMatch &&
+           categoryMatch && experienceMatch;
+  });
+
+  const results =
+    document.getElementById("results");
+
+  if(matches.length === 0){
+
+    results.innerHTML =
+      "<p>No matching jobs found in the current database.</p>";
+
+    return;
+  }
+
+  results.innerHTML = matches.map(job => `
+    <div class="job">
+      <h3>${job.title}</h3>
+      <p>📍 ${job.city}</p>
+      <p>💰 SAR ${job.salary.toLocaleString()}+</p>
+      <p class="match">✓ Matching position</p>
+      <a href="${job.link}" target="_blank">
+        <button>Apply / Search Job</button>
+      </a>
+    </div>
+  `).join("");
+
+}
+
+</script>
+
+</body>
+</html>
