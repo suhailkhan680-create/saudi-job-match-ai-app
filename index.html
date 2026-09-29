@@ -3,62 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b5d3b">
 <title>Saudi Job Match AI</title>
+
 <style>
+*{box-sizing:border-box}
+
 body{
-  font-family:Arial,sans-serif;
   margin:0;
+  font-family:Arial,sans-serif;
   background:#f4f6f8;
   color:#222;
 }
+
 header{
   background:#0b5d3b;
   color:white;
-  padding:25px 18px;
+  padding:28px 18px;
   text-align:center;
 }
-.container{
-  max-width:700px;
-  margin:20px auto;
-  padding:0 15px;
+
+header h1{
+  margin:0;
+  font-size:28px;
 }
+
+header p{
+  margin:8px 0 0;
+}
+
+.container{
+  max-width:760px;
+  margin:auto;
+  padding:18px;
+}
+
 .card{
   background:white;
+  border-radius:15px;
   padding:20px;
   margin-bottom:18px;
-  border-radius:14px;
-  box-shadow:0 2px 10px rgba(0,0,0,.08);
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
 }
-h1{margin:0 0 8px}
-h2{margin-top:0}
-input,select,button{
+
+h2{
+  margin-top:0;
+}
+
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:bold;
+}
+
+input,select,textarea,button{
   width:100%;
-  box-sizing:border-box;
   padding:13px;
-  margin-top:10px;
-  border-radius:8px;
+  margin-top:7px;
+  border-radius:9px;
   border:1px solid #ccc;
   font-size:16px;
 }
+
+textarea{
+  min-height:110px;
+  resize:vertical;
+}
+
 button{
   background:#0b5d3b;
   color:white;
   border:none;
   font-weight:bold;
   cursor:pointer;
+  margin-top:18px;
 }
-button:hover{background:#08482e}
+
+button:hover{
+  background:#08482e;
+}
+
 .job{
   border:1px solid #ddd;
-  border-radius:10px;
-  padding:15px;
-  margin-top:12px;
+  border-radius:12px;
+  padding:16px;
+  margin-top:14px;
 }
+
+.job h3{
+  margin:0 0 8px;
+}
+
 .match{
+  font-size:20px;
+  font-weight:bold;
   color:#0b5d3b;
+}
+
+.reason{
+  background:#f1f8f4;
+  padding:10px;
+  border-radius:8px;
+  margin-top:8px;
+}
+
+.apply{
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  background:#0b5d3b;
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  margin-top:12px;
   font-weight:bold;
 }
-small{color:#666}
+
+.empty{
+  color:#666;
+  text-align:center;
+}
+
+.badge{
+  display:inline-block;
+  background:#e8f4ee;
+  color:#0b5d3b;
+  padding:5px 9px;
+  border-radius:20px;
+  margin:3px;
+  font-size:13px;
+}
 </style>
 </head>
 
@@ -71,152 +145,294 @@ small{color:#666}
 
 <div class="container">
 
-  <div class="card">
-    <h2>Your Job Profile</h2>
+<div class="card">
 
-    <input id="name" placeholder="Your name">
+<h2>👤 Your Job Profile</h2>
 
-    <input id="experience"
-      placeholder="Experience e.g. Restaurant Manager, Retail Supervisor">
+<label>Name</label>
+<input id="name" placeholder="Your name">
 
-    <input id="location"
-      placeholder="Preferred city e.g. Jeddah">
+<label>Your experience</label>
+<textarea id="experience"
+placeholder="Example: Restaurant Manager, Kudu Saudi Arabia, McDonald's India, retail supervision, team management, inventory, P&L, soft services"></textarea>
 
-    <input id="salary"
-      type="number"
-      placeholder="Minimum salary (SAR)">
+<label>Preferred city</label>
+<select id="city">
+<option value="">Any Saudi city</option>
+<option>Jeddah</option>
+<option>Riyadh</option>
+<option>Dammam</option>
+<option>Khobar</option>
+<option>Mecca</option>
+<option>Medina</option>
+<option>Jubail</option>
+<option>Any Saudi City</option>
+</select>
 
-    <select id="category">
-      <option value="">Select job category</option>
-      <option>Restaurant Manager</option>
-      <option>Store Manager</option>
-      <option>Retail Supervisor</option>
-      <option>Soft Services Supervisor</option>
-      <option>Store Keeper</option>
-      <option>F&B Supervisor</option>
-      <option>Branch Manager</option>
-      <option>Other</option>
-    </select>
+<label>Minimum salary (SAR)</label>
+<input id="salary" type="number" placeholder="Example: 5000">
 
-    <button onclick="findJobs()">Find Matching Jobs</button>
-  </div>
+<label>Preferred job</label>
+<select id="category">
+<option value="">Any matching job</option>
+<option>Restaurant Manager</option>
+<option>Store Manager</option>
+<option>Retail Supervisor</option>
+<option>Soft Services Supervisor</option>
+<option>Store Keeper</option>
+<option>F&B Supervisor</option>
+<option>Branch Manager</option>
+<option>Area Supervisor</option>
+</select>
 
-  <div class="card">
-    <h2>Matching Jobs</h2>
-    <div id="results">
-      Enter your profile above and tap
-      <b>Find Matching Jobs</b>.
-    </div>
-  </div>
+<button onclick="findJobs()">🔎 Find Matching Jobs</button>
+
+</div>
+
+<div class="card">
+
+<h2>🎯 Matching Jobs</h2>
+
+<div id="results" class="empty">
+Enter your profile and tap
+<b>Find Matching Jobs</b>.
+</div>
+
+</div>
 
 </div>
 
 <script>
 
+const jobs = [
+
+{
+title:"Restaurant Manager",
+city:"Jeddah",
+salary:6500,
+keywords:["restaurant","manager","qsr","food","f&b","team","operations"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Store Manager",
+city:"Jeddah",
+salary:6000,
+keywords:["store","manager","retail","inventory","team","operations"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Retail Supervisor",
+city:"Jeddah",
+salary:5500,
+keywords:["retail","supervisor","store","inventory","team","sales"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Soft Services Supervisor",
+city:"Jeddah",
+salary:5000,
+keywords:["soft","service","supervisor","cleaning","facility","fm","bicSc","hse"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Store Keeper",
+city:"Jeddah",
+salary:4500,
+keywords:["store","storekeeper","inventory","warehouse","erp","stock"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"F&B Supervisor",
+city:"Riyadh",
+salary:5500,
+keywords:["restaurant","f&b","food","beverage","supervisor","hotel"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Branch Manager",
+city:"Riyadh",
+salary:7000,
+keywords:["branch","manager","retail","restaurant","operations","team","p&l"],
+link:"https://www.linkedin.com/jobs/"
+},
+
+{
+title:"Area Supervisor",
+city:"Dammam",
+salary:6500,
+keywords:["area","supervisor","operations","restaurant","retail","team"],
+link:"https://www.linkedin.com/jobs/"
+}
+
+];
+
+
 function findJobs(){
 
-  const experience =
-    document.getElementById("experience").value.toLowerCase();
+const experience =
+document.getElementById("experience").value.toLowerCase();
 
-  const location =
-    document.getElementById("location").value.toLowerCase();
+const city =
+document.getElementById("city").value;
 
-  const salary =
-    Number(document.getElementById("salary").value || 0);
+const salary =
+Number(document.getElementById("salary").value || 0);
 
-  const category =
-    document.getElementById("category").value.toLowerCase();
+const category =
+document.getElementById("category").value.toLowerCase();
 
-  const jobs = [
 
-    {
-      title:"Restaurant Manager",
-      city:"Jeddah",
-      salary:6500,
-      category:"restaurant manager",
-      link:"https://www.linkedin.com/jobs/"
-    },
+const scored = jobs.map(job => {
 
-    {
-      title:"Store Manager",
-      city:"Jeddah",
-      salary:6000,
-      category:"store manager",
-      link:"https://www.linkedin.com/jobs/"
-    },
+let score = 0;
+let matched = [];
 
-    {
-      title:"Retail Supervisor",
-      city:"Jeddah",
-      salary:5000,
-      category:"retail supervisor",
-      link:"https://www.linkedin.com/jobs/"
-    },
+const text =
+experience + " " + category;
 
-    {
-      title:"Soft Services Supervisor",
-      city:"Jeddah",
-      salary:5000,
-      category:"soft services supervisor",
-      link:"https://www.linkedin.com/jobs/"
-    },
 
-    {
-      title:"Store Keeper",
-      city:"Jeddah",
-      salary:4500,
-      category:"store keeper",
-      link:"https://www.linkedin.com/jobs/"
-    }
+job.keywords.forEach(keyword => {
 
-  ];
+if(text.includes(keyword.toLowerCase())){
 
-  let matches = jobs.filter(job => {
+score += 10;
 
-    const cityMatch =
-      !location || job.city.toLowerCase().includes(location);
+matched.push(keyword);
 
-    const salaryMatch =
-      !salary || job.salary >= salary;
+}
 
-    const categoryMatch =
-      !category ||
-      job.category.includes(category) ||
-      category.includes(job.category);
+});
 
-    const experienceMatch =
-      !experience ||
-      job.category.includes("restaurant") && experience.includes("restaurant") ||
-      job.category.includes("store") && experience.includes("store") ||
-      job.category.includes("retail") && experience.includes("retail") ||
-      job.category.includes("soft") && experience.includes("soft");
 
-    return cityMatch && salaryMatch &&
-           categoryMatch && experienceMatch;
-  });
+if(category &&
+job.title.toLowerCase().includes(category)){
 
-  const results =
-    document.getElementById("results");
+score += 25;
 
-  if(matches.length === 0){
+}
 
-    results.innerHTML =
-      "<p>No matching jobs found in the current database.</p>";
 
-    return;
-  }
+if(city &&
+(job.city === city || city === "Any Saudi City")){
 
-  results.innerHTML = matches.map(job => `
-    <div class="job">
-      <h3>${job.title}</h3>
-      <p>📍 ${job.city}</p>
-      <p>💰 SAR ${job.salary.toLocaleString()}+</p>
-      <p class="match">✓ Matching position</p>
-      <a href="${job.link}" target="_blank">
-        <button>Apply / Search Job</button>
-      </a>
-    </div>
-  `).join("");
+score += 20;
+
+}
+
+
+if(salary > 0 && job.salary >= salary){
+
+score += 15;
+
+}
+
+
+score = Math.min(score,100);
+
+
+return {
+job,
+score,
+matched
+};
+
+});
+
+
+const filtered = scored
+.filter(item => {
+
+if(city &&
+city !== "Any Saudi City" &&
+item.job.city !== city){
+
+return false;
+
+}
+
+if(salary &&
+item.job.salary < salary){
+
+return false;
+
+}
+
+if(category &&
+!item.job.title.toLowerCase().includes(category) &&
+item.score < 35){
+
+return false;
+
+}
+
+return item.score > 0;
+
+})
+.sort((a,b)=>b.score-a.score);
+
+
+const results =
+document.getElementById("results");
+
+
+if(filtered.length === 0){
+
+results.innerHTML =
+"<p class='empty'>No matching jobs found. Try changing your city, salary or job category.</p>";
+
+return;
+
+}
+
+
+results.innerHTML = filtered.map(item => {
+
+const j = item.job;
+
+const reasons =
+item.matched.length
+? item.matched.slice(0,6).map(x =>
+`<span class="badge">${x}</span>`
+).join("")
+: "<span class='badge'>Profile match</span>";
+
+
+return `
+
+<div class="job">
+
+<h3>${j.title}</h3>
+
+<p>📍 <b>${j.city}</b></p>
+
+<p>💰 Salary: <b>SAR ${j.salary.toLocaleString()}+</b></p>
+
+<p class="match">
+🎯 ${item.score}% Match
+</p>
+
+<div class="reason">
+<b>Why this matches:</b><br>
+${reasons}
+</div>
+
+<a class="apply"
+href="${j.link}"
+target="_blank">
+Apply / Search Job
+</a>
+
+</div>
+
+`;
+
+}).join("");
 
 }
 
